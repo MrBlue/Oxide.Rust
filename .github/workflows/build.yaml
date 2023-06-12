@@ -23,6 +23,9 @@ jobs:
     - name: Use version number
       run: echo $VERSION
 
+    - name: Test
+      run: echo "${{ github.workspace }}"
+
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
@@ -37,7 +40,7 @@ jobs:
       with:
         files: |
           src/bin/Bundle/Oxide.*.zip
-        tag_name: 2.0.${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}
+        tag_name: 2.0.${{ env.VERSION }}
         fail_on_unmatched_files: true
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
