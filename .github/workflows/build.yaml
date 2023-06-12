@@ -15,9 +15,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Version number hack
-      run: |
-        echo "VERSION_NUMBER=$((5901+GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
+    - name: Version number
+      uses: mlilback/build-number@v1
+      with:
+        base: 5901
+        run-id: ${GITHUB_RUN_NUMBER}
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -34,7 +36,7 @@ jobs:
         files: |
           $(find ./ -type f -name 'Oxide.*.zip')
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag_name: ${{ env.VERSION_NUMBER }}
-        release_name: ${{ env.VERSION_NUMBER }}
+        tag_name: ${{ env.BUILD_NUMBER }}
+        release_name: ${{ env.BUILD_NUMBER }}
         body: |
           See https://umod.org/games/rust for changes
