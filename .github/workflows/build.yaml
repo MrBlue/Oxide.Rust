@@ -17,13 +17,16 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Generate build number
-      uses: onyxmueller/build-tag-number@v1
+    - name: Increment version
+      uses: action-pack/increment@v2
       with:
-        token: ${{secrets.github_token}}
+        name: 'VERSION'
+        token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
-    - name: Print new build number
-      run: echo "Build number is ${env:BUILD_NUMBER}"
+    - name: Log repository variables
+      run: |
+        echo "GITHUB_REF_NAME=$env:GITHUB_REF_NAME"
+        echo "VERSION=$env:VERSION"
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -50,7 +53,7 @@ jobs:
       with:
         files: |
           src/bin/Artifact/Oxide.*.zip
-        tag_name: 2.0.${env:VERSION}
+        tag_name: 2.0.${vars:VERSION}
         fail_on_unmatched_files: true
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
