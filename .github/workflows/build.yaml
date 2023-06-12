@@ -21,7 +21,7 @@ jobs:
       run: |
         echo ::set-env name=GITHUB_RUN_NUMBER_WITH_OFFSET::$(($NUM+5901))
     
-    - run: echo "$GITHUB_CONTEXT" 
+    - run: echo '${{ toJSON(github) }}'
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
