@@ -50,7 +50,7 @@ jobs:
       with:
         files: |
           src/bin/Artifact/Oxide.*.zip
-        tag_name: 2.0.${{ env.VERSION }}
+        tag_name: 2.0.${env:VERSION}
         fail_on_unmatched_files: true
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
