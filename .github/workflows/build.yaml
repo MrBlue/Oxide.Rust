@@ -36,7 +36,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          Oxide.*.zip
+          Oxide.Rust/src/bin/Bundle/Oxide.*.zip
         tag_name: 2.0.${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}
         fail_on_unmatched_files: true
         token: ${{ secrets.GITHUB_TOKEN }}
