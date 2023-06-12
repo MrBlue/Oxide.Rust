@@ -26,7 +26,7 @@ jobs:
     - name: Log repository variables
       run: |
         echo "GITHUB_REF_NAME=$env:GITHUB_REF_NAME"
-        echo "VERSION=$env:VERSION"
+        echo "VERSION=$vars:VERSION"
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -53,7 +53,7 @@ jobs:
       with:
         files: |
           src/bin/Artifact/Oxide.*.zip
-        tag_name: 2.0.${vars:VERSION}
+        tag_name: 2.0.${{ vars.VERSION }}
         fail_on_unmatched_files: true
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
