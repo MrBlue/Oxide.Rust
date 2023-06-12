@@ -17,14 +17,13 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set version number
-      run: echo "VERSION=$(expr ${{ github.run_number }} + 5908)" >> $GITHUB_ENV
+    - name: Generate build number
+      uses: onyxmueller/build-tag-number@v1
+      with:
+        token: ${{secrets.github_token}}
 
-    - name: Use version number
-      run: echo $VERSION
-
-    - name: Test
-      run: echo "${{ github.workspace }}"
+    - name: Print new build number
+      run: echo "Build number is ${env:BUILD_NUMBER}"
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -34,6 +33,17 @@ jobs:
 
     - name: Build solution
       run: msbuild Oxide.Rust.sln -t:rebuild -property:Configuration=Release
+      
+    - name: Create artifact bundles
+      run: |
+        New-Item "src\bin\Artifact" -ItemType Directory -Force | Out-Null
+        Get-ChildItem "src\bin\Bundle" -Directory | ForEach-Object {
+            $artifact = $($_.Name)
+            if ($env:GITHUB_REF_NAME -ne "master") {
+                $artifact = $($_.Name) + "-$env:GITHUB_REF_NAME"
+            }
+            Compress-Archive -Path ".\src\bin\Bundle\$($_.Name)\*" -DestinationPath "src\bin\Artifact\$artifact.zip"
+        }
 
     - name: Deploy to GitHub Releases
       uses: softprops/action-gh-release@v1
