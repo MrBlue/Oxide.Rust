@@ -35,7 +35,7 @@ jobs:
       run: nuget restore Oxide.Rust.sln
 
     - name: Build solution
-      run: msbuild Oxide.Rust.sln -t:rebuild -property:Configuration=Release
+      run: msbuild Oxide.Rust.sln -t:rebuild -property:Configuration=Release -property:Version=2.0.${{ vars.VERSION }}
       
     - name: Create artifact bundles
       run: |
@@ -56,5 +56,6 @@ jobs:
         tag_name: 2.0.${{ vars.VERSION }}
         fail_on_unmatched_files: true
         token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: ${{ github.ref != 'refs/heads/master' }}
         body: |
           See https://umod.org/games/rust for changes
