@@ -14,14 +14,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
-    - name: Increment version number
-      env:
-        NUM: ${{ github.run_number }}
-      run: |
-        echo ::set-env name=GITHUB_RUN_NUMBER_WITH_OFFSET::$(($NUM+5901))
-    
-    - run: echo '${{ toJSON(github) }}'
+    - name: Set version number
+      run: echo "VERSION=$(expr ${{ github.run_number }} + 5908)" >> $GITHUB_ENV
+
+    - name: Use version number
+      run: echo $VERSION
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
