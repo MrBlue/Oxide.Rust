@@ -21,7 +21,7 @@ jobs:
       run: |
         echo ::set-env name=GITHUB_RUN_NUMBER_WITH_OFFSET::$(($NUM+5901))
     
-    - run: echo $GITHUB_RUN_NUMBER_WITH_OFFSET
+    - run: echo ${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -36,9 +36,9 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          /Oxide.*.zip/
-        name: 2.0.${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}
+          Oxide.*.zip
         tag_name: 2.0.${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}
+        fail_on_unmatched_files: true
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
           See https://umod.org/games/rust for changes
