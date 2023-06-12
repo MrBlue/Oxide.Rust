@@ -15,11 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Version number
-      uses: mlilback/build-number@v1
-      with:
-        base: 5901
-        run-id: ${{ github.run_number }}
+    - name: Increase build
+      run: |
+        echo "GITHUB_RUN_NUMBER_WITH_OFFSET=$(($GITHUB_RUN_NUMBER+5901))" >> $GITHUB_ENV
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
@@ -34,9 +32,9 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          $(find ./ -type f -name 'Oxide.*.zip')
-        name: ${{ env.BUILD_NUMBER }}
-        tag_name: ${{ env.BUILD_NUMBER }}
+          /Oxide.*.zip/
+        name: 2.0.${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}
+        tag_name: 2.0.${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |
           See https://umod.org/games/rust for changes
