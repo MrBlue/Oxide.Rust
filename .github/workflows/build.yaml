@@ -15,9 +15,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Increase build
+    - name: Increment version number
+      env:
+        NUM: ${{ github.run_number }}
       run: |
-        echo "GITHUB_RUN_NUMBER_WITH_OFFSET=$(($GITHUB_RUN_NUMBER+5901))" >> $GITHUB_ENV
+        echo ::set-env name=GITHUB_RUN_NUMBER_WITH_OFFSET::$(($NUM+5901))
+    
+    - run: echo $GITHUB_RUN_NUMBER_WITH_OFFSET
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
