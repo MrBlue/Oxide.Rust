@@ -15,6 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Version number hack
+      run: |
+        echo "VERSION_NUMBER=$((5901+GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
+
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
@@ -23,3 +27,14 @@ jobs:
 
     - name: Build solution
       run: msbuild Oxide.Rust.sln -t:rebuild -property:Configuration=Release
+
+    - name: Deploy to GitHub Releases
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          $(find ./ -type f -name 'Oxide.*.zip')
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag_name: ${{ env.VERSION_NUMBER }}
+        release_name: ${{ env.VERSION_NUMBER }}
+        body: |
+          See https://umod.org/games/rust for changes
