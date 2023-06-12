@@ -19,7 +19,7 @@ jobs:
       uses: mlilback/build-number@v1
       with:
         base: 5901
-        run-id: ${{GITHUB_RUN_NUMBER}}
+        run-id: ${{ github.run_number }}
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
