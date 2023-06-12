@@ -21,7 +21,7 @@ jobs:
       uses: action-pack/increment@v2
       with:
         name: 'VERSION'
-        token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Log repository variables
       run: |
