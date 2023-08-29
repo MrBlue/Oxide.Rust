@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Increment version
         uses: action-pack/increment@v2
@@ -29,11 +29,17 @@ jobs:
       - name: Build solution
         run: msbuild Oxide.Rust.sln -t:rebuild -property:Configuration=Release -property:Version=2.0.${{ vars.VERSION }}${{ inputs.branch-postfix }}
 
+      - name: Zip bundles
+        run: |
+          cd src\bin\Bundle
+          7z a Oxide.Rust.zip Oxide.Rust
+          7z a Oxide.Rust-linux.zip Oxide.Rust-linux
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: oxide-bundles
-          path: src\bin\Bundle\*
+          path: src\bin\Bundle\*.zip
 
     # - name: Set Artifact Branch Suffix
     #   id: set_artifact_branch_suffix
