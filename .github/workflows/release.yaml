@@ -1,0 +1,29 @@
+name: Build and create release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yaml
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: oxide-bundles
+          path: artifacts
+
+      - name: Deploy to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/Oxide.*.zip
+          tag_name: 2.0.${{ vars.VERSION }}
+          fail_on_unmatched_files: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            See https://umod.org/games/rust for changes

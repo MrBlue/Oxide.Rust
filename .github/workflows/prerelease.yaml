@@ -1,0 +1,29 @@
+name: Build and upload non master branch to S3
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yaml
+    secrets: inherit
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: oxide-bundles
+          path: artifacts
+      - name: Deploy To downloads.oxidemod.dev
+        shell: pwsh
+        run: |
+          Install-Module -Name AWS.Tools.Installer -Force
+          Install-AWSToolsModule AWS.Tools.S3 -Force
+          Set-AWSCredential -AccessKey ${{ secrets.CLOUDFLARE_R2_KEY }} -SecretKey ${{ secrets.CLOUDFLARE_R2_SECRET }}
+          Write-S3Object -BucketName oxide-downloads -Folder artifacts -KeyPrefix rust/${{ github.ref_name }} -Force -PublicReadOnly -Region auto -EndpointUrl https://6ca34792c7e62e96e8088efe1ee92052.r2.cloudflarestorage.com
+          Write-Output 'All files written to cloud cdn'

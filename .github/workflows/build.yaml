@@ -1,0 +1,57 @@
+name: Build Solution
+
+on:
+  workflow_call:
+    inputs:
+      branch-postfix:
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Increment version
+        uses: action-pack/increment@v2
+        with:
+          name: "VERSION"
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Restore Packages
+        run: nuget restore Oxide.Rust.sln
+
+      - name: Build solution
+        run: msbuild Oxide.Rust.sln -t:rebuild -property:Configuration=Release -property:Version=2.0.${{ vars.VERSION }}${{ inputs.branch-postfix }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: oxide-bundles
+          path: src\bin\Bundle\*
+
+    # - name: Set Artifact Branch Suffix
+    #   id: set_artifact_branch_suffix
+    #   run: |
+    #     if [ "${{ github.ref }}" != "refs/heads/master" ]; then
+    #       echo "ARTIFACT_BRANCH_SUFFIX=-${{ github.ref_name }}" >> $GITHUB_ENV
+    #     else
+    #       echo "ARTIFACT_BRANCH_SUFFIX=" >> $GITHUB_ENV
+    #     fi
+
+    # - name: Upload Oxide.Rust artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: Oxide.Rust${{ env.ARTIFACT_BRANCH_SUFFIX }}
+    #     path: src\bin\Bundle\Oxide.Rust\*
+
+    # - name: Upload Oxide.Rust-linux artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: Oxide.Rust-linux${{ env.ARTIFACT_BRANCH_SUFFIX }}
+    #     path: src\bin\Bundle\Oxide.Rust-linux\*
