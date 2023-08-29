@@ -11,7 +11,7 @@ jobs:
     secrets: inherit
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       - name: Download artifacts
@@ -25,3 +25,4 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET }}
+          AWS_DEFAULT_REGION: auto
