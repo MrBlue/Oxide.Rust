@@ -9,8 +9,11 @@ jobs:
   build:
     uses: ./.github/workflows/build.yaml
     secrets: inherit
+    with:
+      branch-postfix: "-${{ github.ref_name }}"
 
   deploy:
+    name: Deploy to S3
     runs-on: ubuntu-22.04
     needs: build
     steps:
