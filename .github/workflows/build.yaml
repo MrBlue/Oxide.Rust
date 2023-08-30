@@ -13,9 +13,10 @@ jobs:
     runs-on: windows-2022
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Increment version
+      - name: Increment Version
         uses: action-pack/increment@v2
         with:
           name: "VERSION"
@@ -27,16 +28,16 @@ jobs:
       - name: Restore Packages
         run: nuget restore Oxide.Rust.sln
 
-      - name: Build solution
+      - name: Build Solution
         run: msbuild Oxide.Rust.sln -t:rebuild -property:Configuration=Release -property:Version=2.0.${{ vars.VERSION }}${{ inputs.branch-postfix }}
 
-      - name: Zip bundles
+      - name: Compress Bundles
         run: |
           cd src\bin\Bundle
           7z a Oxide.Rust.zip Oxide.Rust
           7z a Oxide.Rust-linux.zip Oxide.Rust-linux
 
-      - name: Upload artifacts
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: oxide-bundles

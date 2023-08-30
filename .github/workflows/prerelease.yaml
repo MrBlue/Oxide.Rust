@@ -1,4 +1,4 @@
-name: Build and upload non master branch to S3
+name: Build and Upload Bundles to S3
 
 on:
   push:
@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-22.04
     needs: build
     steps:
-      - name: Download artifacts
+      - name: Download Artifacts
         uses: actions/download-artifact@v3
         with:
           name: oxide-bundles
           path: artifacts
-      - name: Upload to Cloudflare R2
+      - name: Deploy to Cloudflare R2
         run: |
           aws s3 sync artifacts s3://oxide-downloads/artifacts/rust/${{ github.ref_name }} --endpoint-url https://6ca34792c7e62e96e8088efe1ee92052.r2.cloudflarestorage.com/
         env:
