@@ -25,3 +25,27 @@ jobs:
       CLOUDFLARE_R2_KEY: ${{ secrets.CLOUDFLARE_R2_KEY }}
       CLOUDFLARE_R2_SECRET: ${{ secrets.CLOUDFLARE_R2_SECRET }}
       CLOUDFLARE_R2_ENDPOINT: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
+
+  update-docs:
+    name: Update Documentation
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Checkout Docs Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.repository.owner.name }}/Oxide.Docs
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          ref: main
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ github.event.repository.name }}-docs
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email github-actions@github.com
+          git config --global user.name github-actions
+          git add docs.json
+          git diff-index --quiet HEAD || git commit -m "Update hooks index to 2.0.${{ vars.VERSION }}"
+          git push
+    
