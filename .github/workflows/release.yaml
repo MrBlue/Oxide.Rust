@@ -44,7 +44,7 @@ jobs:
       - name: Checkout Docs Repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.repository.owner.name }}/Oxide.Docs
+          repository: OxideMod/Oxide.Docs
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           ref: main
       - name: Download Artifacts
